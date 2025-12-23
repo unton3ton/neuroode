@@ -2,7 +2,7 @@
 >├── backend/  
 >│   └── server.py               # Bottle API 
 >├── frontend/  
->│   ├── index.html              # Vue.js одностраничник 
+>│   ├── index.html              # Vue.js одностраничник  
 >│   ├── app.js                  # Vue-компоненты + Chart.js 
 >│   └── style.CSS 
 >└── requirements.txt            # зависимости
