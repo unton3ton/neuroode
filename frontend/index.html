@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Решатель ОДУ</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <header class="header">
+        <h1><span class="accent">Диффузор</span> — решение ОДУ</h1>
+        <p class="subtitle">Численные и нейросетевые методы решения дифференциальных уравнений</p>
+      </header>
+
+      <main class="main-content">
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-text">Выберите уравнение:</span>
+              <select v-model="selectedEquation" class="form-select">
+                <option value="eq1">dy/dx + (x + lq(x))·y = x³ + 2x + lq(x)·x², y(0)=1</option>
+                <option value="eq2">dy/dx = -2x·y, y(0)=1</option>
+                <option value="eq3">dy/dx = y·(1 - y), y(0)=0.1</option>
+              </select>
+            </label>
+          </div>
+
+          <button @click="solve" :disabled="loading" class="btn-solve">
+            <span v-if="loading" class="btn-loading">
+              <span class="spinner"></span> Решаю...
+            </span>
+            <span v-else>🎯 Решить уравнение</span>
+          </button>
+
+          <div v-if="error" class="error-message">
+            ⚠️ {{ error }}
+          </div>
+        </div>
+
+        <!-- Контейнер для данных и графика -->
+        <div v-if="result" class="results-container">
+          <div class="data-panel">
+            <h3 class="panel-title">📊 Сравнение решений</h3>
+            <div class="data-grid">
+              <div class="data-column">
+                <h4 class="data-title">Численное решение</h4>
+                <div class="data-values">
+                  <div v-for="(num, index) in result.numerical" :key="'num-' + index" 
+                       class="data-item">
+                    <span class="data-x">x = {{ formatX(result.x[index]) }}</span>
+                    <span class="data-value">y = {{ formatY(num) }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="data-column">
+                <h4 class="data-title">Нейросетевое решение</h4>
+                <div class="data-values">
+                  <div v-for="(neu, index) in result.neural" :key="'neu-' + index" 
+                       class="data-item">
+                    <span class="data-x">x = {{ formatX(result.x[index]) }}</span>
+                    <span class="data-value">y = {{ formatY(neu) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-panel">
+            <h3 class="panel-title">📈 График решений</h3>
+            <div class="chart-container">
+              <canvas ref="chart"></canvas>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color numerical"></span>
+                <span class="legend-text">Численное решение (RK45)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color neural"></span>
+                <span class="legend-text">Нейросетевое решение (PINN)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>Диффузор v1.0 | Решатель дифференциальных уравнений </p>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
